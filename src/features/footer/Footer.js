@@ -14,6 +14,28 @@ const RemainingTodos = ({ count }) => {
   )
 }
 
+const CompletedTodos = ({ count }) => {
+  const suffix = count === 1 ? '' : 's'
+
+  return (
+    <div className="todo-count">
+      <h5>Completed Todos</h5>
+      <strong>{count}</strong> item{suffix}
+    </div>
+  )
+}
+
+const TotalTodos = ({ count }) => {
+  const suffix = count === 1 ? '' : 's'
+
+  return (
+    <div className="todo-count">
+      <h5>Total Todos</h5>
+      <strong>{count}</strong> item{suffix}
+    </div>
+  )
+}
+
 const StatusFilter = ({ value: status, onChange }) => {
   const renderedFilters = Object.keys(StatusFilters).map((key) => {
     const value = StatusFilters[key]
@@ -75,6 +97,14 @@ const Footer = () => {
     return uncompletedTodos.length
   })
 
+  const todosCompleted = useSelector((state) => {
+    const completedTodos = state.todos.filter((todo) => todo.completed)
+    return completedTodos.length
+  })
+
+  const todosTotal = useSelector((state) => {
+    return state.todos.length
+  })
   const { status, colors } = useSelector((state) => state.filters)
 
   const onMarkCompletedClicked = () => dispatch({ type: 'todos/allCompleted' })
@@ -101,7 +131,11 @@ const Footer = () => {
           Clear Completed
         </button>
       </div>
-      <RemainingTodos count={todosRemaining} />
+      <div className="count-todos">
+        <RemainingTodos count={todosRemaining} />
+        <TotalTodos count={todosTotal} />
+        <CompletedTodos count={todosCompleted} />
+      </div>
       <StatusFilter value={status} onChange={onStatusChange} />
       <ColorFilters value={colors} onChange={onColorChange} />
     </footer>
